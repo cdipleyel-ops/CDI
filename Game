@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Pain Runner V2 - Le jeu de course avec du pain">
+<title>🍞 Pain Runner V2</title>
+
+<style>
+/* =========================================================
+   PAIN RUNNER V2
+   Aucun fichier externe : tout est dans ce HTML.
+   ========================================================= */
+
+:root {
+    --bg: #100b08;
+    --panel: rgba(36, 22, 15, .94);
+    --panel2: rgba(55, 32, 20, .95);
+    --text: #fff4df;
+    --muted: #c8aa88;
+    --gold: #ffd166;
+    --orange: #ff9f43;
+    --red: #ff5c5c;
+    --green: #70e000;
+    --border: rgba(255, 209, 102, .22);
+    --shadow: 0 15px 45px rgba(0,0,0,.45);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background:
+        radial-gradient(circle at 50% 0%, #3b2114 0%, #100b08 55%);
+    color: var(--text);
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Segoe UI Emoji",
+        "Apple Color Emoji",
+        "Noto Color Emoji",
+        sans-serif;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+button {
+    font: inherit;
+}
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* =========================
+   COMMON
+   ========================= */
+
+.hidden {
+    display: none !important;
+}
+
+.screen {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel {
+    width: min(1100px, 100%);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+}
+
+.btn {
+    border: 0;
+    border-radius: 16px;
+    padding: 14px 20px;
+    color: #2b1608;
+    background: linear-gradient(135deg, #ffd166, #ff9f43);
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform .15s, filter .15s;
+    box-shadow: 0 8px 20px rgba(255,159,67,.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.btn:active {
+    transform: scale(.96);
+}
+
+.btn.secondary {
+    color: var(--text);
+    background: #3a2418;
+    box-shadow: none;
+}
+
+.btn.danger {
+    color: white;
+    background: #9e2f2f;
+}
+
+.btn.big {
+    font-size: 1.2rem;
+    padding: 17px 28px;
+}
+
+.emoji {
+    font-family:
+        "Segoe UI Emoji",
+        "Apple Color Emoji",
+        "Noto Color Emoji",
+        system-ui,
+        sans-serif;
+    font-variant-emoji: emoji;
+}
+
+.title {
+    margin: 0;
+    font-size: clamp(2.2rem, 7vw, 5rem);
+    line-height: 1;
+    text-align: center;
+}
+
+.subtitle {
+    color: var(--muted);
+    text-align: center;
+    margin: 15px auto 30px;
+    max-width: 650px;
+}
+
+/* =========================
+   MENU
+   ========================= */
+
+#menuScreen {
+    background:
+        radial-gradient(circle at 50% 20%, rgba(255,159,67,.16), transparent 35%);
+}
+
+.menuPanel {
+    padding: clamp(25px, 6vw, 60px);
+}
+
+.logo {
+    text-align: center;
+    font-size: clamp(3rem, 12vw, 7rem);
+    animation: floating 2.5s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+.menuButtons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    max-width: 620px;
+    margin: auto;
+}
+
+.menuButtons .btn {
+    min-height: 62px;
+}
+
+.currencyBar {
+    margin: 25px auto 0;
+    max-width: 620px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.currency {
+    flex: 1;
+    min-width: 130px;
+    background: #25170f;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+}
+
+.currency strong {
+    display: block;
+    font-size: 1.25rem;
+    color: var(--gold);
+}
+
+/* =========================
+   SHOP
+   ========================= */
+
+.shopPanel {
+    padding: 25px;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.topBar h2 {
+    margin: 0;
+}
+
+.shopGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 15px;
+}
+
+.skinCard {
+    background: #24160e;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.skinCard.owned {
+    border-color: rgba(112,224,0,.45);
+}
+
+.skinCard.equipped {
+    box-shadow: 0 0 0 2px rgba(255,209,102,.5), 0 12px 30px rgba(0,0,0,.25);
+}
+
+.skinEmoji {
+    font-size: 4rem;
+    margin: 10px 0;
+}
+
+.skinName {
+    font-weight: 900;
+}
+
+.skinPrice {
+    color: var(--gold);
+    margin: 8px;
+}
+
+.skinRarity {
+    color: var(--muted);
+    font-size: .8rem;
+    margin-bottom: 10px;
+}
+
+.skinCard button {
+    width: 100%;
+}
+
+/* =========================
+   STATS
+   ========================= */
+
+.statsPanel {
+    padding: 25px;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 15px;
+}
+
+.statBox {
+    background: #24160e;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+}
+
+.statIcon {
+    font-size: 2rem;
+}
+
+.statValue {
+    color: var(--gold);
+    font-size: 1.7rem;
+    font-weight: 900;
+}
+
+/* =========================
+   SETTINGS
+   ========================= */
+
+.settingsPanel {
+    padding: 25px;
+}
+
+.setting {
+    background: #24160e;
+    border-radius: 17px;
+    padding: 17px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.switch {
+    width: 58px;
+    height: 32px;
+    border: 0;
+    border-radius: 50px;
+    background: #5a4030;
+    cursor: pointer;
+    position: relative;
+}
+
+.switch::after {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 4px;
+    left: 5px;
+    border-radius: 50%;
+    background: white;
+    transition: transform .2s;
+}
+
+.switch.active {
+    background: #d88b32;
+}
+
+.switch.active::after {
+    transform: translateX(24px);
+}
+
+/* =========================
+   GAME
+   ========================= */
+
+#gameScreen {
+    padding: 10px;
+    align-items: flex-start;
+}
+
+.gameWrap {
+    width: min(1200px, 100%);
+}
+
+.hud {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.hudBox {
+    background: rgba(36,22,15,.95);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px;
+    text-align: center;
+}
+
+.hudLabel {
+    display: block;
+    color: var(--muted);
+    font-size: .7rem;
+}
+
+.hudValue {
+    font-weight: 900;
+    color: var(--gold);
+}
+
+#game {
+    position: relative;
+    height: min(68vh, 620px);
+    min-height: 390px;
+    overflow: hidden;
+    border-radius: 25px;
+    border: 2px solid rgba(255,209,102,.22);
+    background:
+        linear-gradient(
+            to bottom,
+            #65c5ff 0%,
+            #b8e8ff 53%,
+            #eec77c 54%,
+            #c48a45 100%
+        );
+    user-select: none;
+    touch-action: manipulation;
+}
+
+/* Soleil */
+
+#game::before {
+    content: "☀️";
+    position: absolute;
+    top: 30px;
+    right: 8%;
+    font-size: 5rem;
+    opacity: .85;
+}
+
+.cloud {
+    position: absolute;
+    font-size: 3.5rem;
+    opacity: .75;
+    animation: cloudMove linear infinite;
+}
+
+.cloud.one {
+    top: 13%;
+    left: -10%;
+    animation-duration: 24s;
+}
+
+.cloud.two {
+    top: 28%;
+    left: -20%;
+    animation-duration: 32s;
+    animation-delay: -8s;
+}
+
+@keyframes cloudMove {
+    from { transform: translateX(-100px); }
+    to { transform: translateX(130vw); }
+}
+
+/* Sol */
+
+.ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 43%;
+    background:
+        repeating-linear-gradient(
+            120deg,
+            #c9914a 0 35px,
+            #b77c3d 35px 70px
+        );
+    border-top: 5px solid #7b4b28;
+}
+
+/* Joueur */
+
+#player {
+    position: absolute;
+    left: 10%;
+    bottom: 25%;
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.2rem;
+    z-index: 20;
+    filter: drop-shadow(0 7px 4px rgba(0,0,0,.3));
+    will-change: transform;
+}
+
+#player.jumping {
+    animation: playerJump .55s ease-out;
+}
+
+@keyframes playerJump {
+    0% { transform: translateY(0) rotate(0); }
+    40% { transform: translateY(-20px) rotate(-8deg); }
+    100% { transform: translateY(0) rotate(0); }
+}
+
+/* Objets */
+
+.obstacle,
+.coin,
+.powerup {
+    position: absolute;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+.obstacle {
+    font-size: 3.1rem;
+    width: 65px;
+    height: 65px;
+    bottom: 25%;
+    animation: obstacleMove var(--speed) linear forwards;
+    filter: drop-shadow(0 5px 3px rgba(0,0,0,.3));
+}
+
+.coin {
+    font-size: 2.2rem;
+    width: 48px;
+    height: 48px;
+    bottom: var(--coinY);
+    animation: coinMove var(--speed) linear forwards;
+}
+
+.powerup {
+    font-size: 2.5rem;
+    width: 55px;
+    height: 55px;
+    bottom: var(--powerY);
+    animation: powerMove var(--speed) linear forwards;
+}
+
+@keyframes obstacleMove {
+    from { transform: translateX(0); }
+    to { transform: translateX(-130vw); }
+}
+
+@keyframes coinMove {
+    from { transform: translateX(0) rotate(0); }
+    to { transform: translateX(-130vw) rotate(720deg); }
+}
+
+@keyframes powerMove {
+    from { transform: translateX(0) scale(1); }
+    50% { transform: translateX(-60vw) scale(1.15); }
+    to { transform: translateX(-130vw) scale(1); }
+}
+
+/* Particules */
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+    font-size: 1.4rem;
+    animation: particleFly .7s ease-out forwards;
+}
+
+@keyframes particleFly {
+    from {
+        transform: translate(0,0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform:
+            translate(
+                var(--dx),
+                var(--dy)
+            )
+            scale(.2);
+        opacity: 0;
+    }
+}
+
+/* Combo */
+
+#comboPopup {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%,-50%);
+    z-index: 200;
+    font-size: 2rem;
+    font-weight: 1000;
+    color: var(--gold);
+    pointer-events: none;
+    opacity: 0;
+}
+
+#comboPopup.show {
+    animation: comboShow .75s ease-out;
+}
+
+@keyframes comboShow {
+    0% { opacity: 0; transform: translate(-50%,0) scale(.5); }
+    25% { opacity: 1; transform: translate(-50%,-20px) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%,-70px) scale(1); }
+}
+
+/* Pouvoirs actifs */
+
+#activePowers {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.powerBadge {
+    background: rgba(20,10,5,.8);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 10px;
+    padding: 6px 9px;
+}
+
+/* Bouton pause */
+
+.pauseButton {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    z-index: 150;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(30,15,8,.8);
+    color: white;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+/* Overlays */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(12,7,4,.72);
+    backdrop-filter: blur(5px);
+}
+
+.overlayCard {
+    width: min(480px, 100%);
+    padding: 30px;
+    border-radius: 25px;
+    background: #24160e;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.overlayCard h2 {
+    font-size: 2.5rem;
+    margin-top: 0;
+}
+
+.overlayButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Flash / shake */
+
+#game.hit {
+    animation: shake .35s linear;
+}
+
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+}
+
+#game.shielded {
+    box-shadow: inset 0 0 0 5px rgba(80,200,255,.7);
+}
+
+/* Missions */
+
+.mission {
+    background: #24160e;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.progress {
+    height: 10px;
+    background: #4a3020;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress > div {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#ffd166,#ff9f43);
+    transition: width .3s;
+}
+
+/* Footer */
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    margin-top: 25px;
+    font-size: .85rem;
+}
+
+/* Mobile */
+
+@media (max-width: 650px) {
+    .screen {
+        padding: 10px;
+    }
+
+    .menuButtons {
+        grid-template-columns: 1fr;
+    }
+
+    .hud {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #game {
+        height: 68vh;
+        min-height: 430px;
+        border-radius: 18px;
+    }
+
+    #player {
+        width: 62px;
+        height: 62px;
+        font-size: 3.5rem;
+        left: 8%;
+    }
+
+    .obstacle {
+        font-size: 2.6rem;
+    }
+
+    .title {
+        font-size: 2.8rem;
+    }
+
+    .shopGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .skinEmoji {
+        font-size: 3rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- =====================================================
+     MENU
+     ===================================================== -->
+
+<section id="menuScreen" class="screen">
+    <div class="panel menuPanel">
+
+        <div class="logo emoji">🍞</div>
+
+        <h1 class="title">
+            Pain Runner
+        </h1>
+
+        <p class="subtitle">
+            Cours, saute, mange des pièces et évite tout ce qui veut
+            transformer ton pain en tartine écrasée.
+        </p>
+
+        <div class="menuButtons">
+            <button class="btn big" onclick="startGame()">
+                ▶️ Jouer
+            </button>
+
+            <button class="btn secondary big" onclick="showScreen('shopScreen')">
+                🛒 Boutique
+            </button>
+
+            <button class="btn secondary big" onclick="showScreen('statsScreen')">
+                📊 Statistiques
+            </button>
+
+            <button class="btn secondary big" onclick="showScreen('settingsScreen')">
+                ⚙️ Paramètres
+            </button>
+        </div>
+
+        <div class="currencyBar">
+            <div class="currency">
+                <span class="emoji">🪙</span>
+                <strong id="menuCoins">0</strong>
+                Pièces
+            </div>
+
+            <div class="currency">
+                <span class="emoji">🏆</span>
+                <strong id="menuBest">0</strong>
+                Meilleur score
+            </div>
+        </div>
+
+        <div class="footer">
+            Unicode test :
+            <span class="emoji">🍞 🥖 🥐 🪙 ✨ 🔥 💥 🛡️ 🧲 ⚡</span>
+            <br><br>
+            Aucun serveur. Aucun fichier audio externe. Tout fonctionne dans ce HTML.
+        </div>
+    </div>
+</section>
+
+<!-- =====================================================
+     SHOP
+     ===================================================== -->
+
+<section id="shopScreen" class="screen hidden">
+    <div class="panel shopPanel">
+
+        <div class="topBar">
+            <h2>🛒 Boutique de pains</h2>
+
+            <div>
+                <span class="emoji">🪙</span>
+                <strong id="shopCoins">0</strong>
+            </div>
+        </div>
+
+        <div id="shopGrid" class="shopGrid"></div>
+
+        <br>
+
+        <button class="btn secondary" onclick="showScreen('menuScreen')">
+            ← Retour
+        </button>
+
+    </div>
+</section>
+
+<!-- =====================================================
+     STATS
+     ===================================================== -->
+
+<section id="statsScreen" class="screen hidden">
+    <div class="panel statsPanel">
+
+        <div class="topBar">
+            <h2>📊 Statistiques</h2>
+        </div>
+
+        <div id="statsGrid" class="statsGrid"></div>
+
+        <h2 style="margin-top:30px">🎯 Missions</h2>
+
+        <div id="missions"></div>
+
+        <br>
+
+        <button class="btn secondary" onclick="showScreen('menuScreen')">
+            ← Retour
+        </button>
+
+    </div>
+</section>
+
+<!-- =====================================================
+     SETTINGS
+     ===================================================== -->
+
+<section id="settingsScreen" class="screen hidden">
+    <div class="panel settingsPanel">
+
+        <h2>⚙️ Paramètres</h2>
+
+        <div class="setting">
+            <div>
+                <strong>🔊 Effets sonores</strong>
+                <br>
+                <small>Jump, pièces, collisions, boutique...</small>
+            </div>
+            <button id="sfxSwitch" class="switch active"
+                    onclick="toggleSFX()"></button>
+        </div>
+
+        <div class="setting">
+            <div>
+                <strong>🎵 Musique</strong>
+                <br>
+                <small>Petite musique générée directement par le navigateur</small>
+            </div>
+            <button id="musicSwitch" class="switch"
+                    onclick="toggleMusic()"></button>
+        </div>
+
+        <div class="setting">
+            <div>
+                <strong>🧹 Réinitialiser la sauvegarde</strong>
+                <br>
+                <small>Supprime les pièces, skins et statistiques.</small>
+            </div>
+
+            <button class="btn danger" onclick="resetSave()">
+                Reset
+            </button>
+        </div>
+
+        <br>
+
+        <button class="btn secondary" onclick="showScreen('menuScreen')">
+            ← Retour
+        </button>
+
+    </div>
+</section>
+
+<!-- =====================================================
+     GAME
+     ===================================================== -->
+
+<section id="gameScreen" class="screen hidden">
+
+    <div class="gameWrap">
+
+        <div class="hud">
+
+            <div class="hudBox">
+                <span class="hudLabel">SCORE</span>
+                <span id="scoreDisplay" class="hudValue">0</span>
+            </div>
+
+            <div class="hudBox">
+                <span class="hudLabel">🪙 PIÈCES</span>
+                <span id="runCoinsDisplay" class="hudValue">0</span>
+            </div>
+
+            <div class="hudBox">
+                <span class="hudLabel">NIVEAU</span>
+                <span id="levelDisplay" class="hudValue">1</span>
+            </div>
+
+            <div class="hudBox">
+                <span class="hudLabel">🔥 COMBO</span>
+                <span id="comboDisplay" class="hudValue">x1</span>
+            </div>
+
+        </div>
+
+        <div id="game">
+
+            <div class="cloud one emoji">☁️</div>
+            <div class="cloud two emoji">☁️</div>
+
+            <div class="ground"></div>
+
+            <div id="activePowers"></div>
+
+            <button class="pauseButton" onclick="pauseGame()">
+                ⏸️
+            </button>
+
+            <div id="player" class="emoji">🍞</div>
+
+            <div id="comboPopup">🔥 COMBO !</div>
+
+            <!-- PAUSE -->
+
+            <div id="pauseOverlay" class="overlay hidden">
+                <div class="overlayCard">
+
+                    <h2>⏸️ Pause</h2>
+
+                    <p>
+                        Ton pain reprend son souffle...
+                    </p>
+
+                    <div class="overlayButtons">
+                        <button class="btn" onclick="resumeGame()">
+                            ▶️ Continuer
+                        </button>
+
+                        <button class="btn secondary" onclick="quitGame()">
+                            🏠 Menu
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- GAME OVER -->
+
+            <div id="gameOverOverlay" class="overlay hidden">
+                <div class="overlayCard">
+
+                    <div class="emoji" style="font-size:5rem">💥🍞</div>
+
+                    <h2>PAIN ÉCRASÉ !</h2>
+
+                    <p id="gameOverText"></p>
+
+                    <div class="overlayButtons">
+
+                        <button class="btn" onclick="startGame()">
+                            🔄 Rejouer
+                        </button>
+
+                        <button class="btn secondary" onclick="quitGame()">
+                            🏠 Menu
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <p class="footer">
+            🖱️ Clique / 📱 touche l'écran / ⌨️ ESPACE ou ↑ pour sauter
+        </p>
+
+    </div>
+</section>
+
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   SAUVEGARDE
+   ========================================================= */
+
+const SAVE_KEY = "pain_runner_v2_save";
+
+const defaultSave = {
+    coins: 0,
+    best: 0,
+    totalCoins: 0,
+    games: 0,
+    jumps: 0,
+    powerups: 0,
+    distance: 0,
+    skins: ["classic"],
+    equipped: "classic",
+    sfx: true,
+    music: false,
+    missions: {
+        coins: 0,
+        jumps: 0,
+        games: 0,
+        powerups: 0
+    }
+};
+
+let save = loadSave();
+
+function loadSave() {
+    try {
+        const raw = localStorage.getItem(SAVE_KEY);
+
+        if (!raw) {
+            return structuredClone(defaultSave);
+        }
+
+        const data = JSON.parse(raw);
+
+        return {
+            ...structuredClone(defaultSave),
+            ...data,
+            missions: {
+                ...defaultSave.missions,
+                ...(data.missions || {})
+            }
+        };
+    } catch (error) {
+        console.warn("Sauvegarde invalide :", error);
+        return structuredClone(defaultSave);
+    }
+}
+
+function saveGame() {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+}
+
+/* =========================================================
+   SKINS
+   ========================================================= */
+
+const skins = [
+    {
+        id: "classic",
+        name: "Pain Classique",
+        emoji: "🍞",
+        price: 0,
+        rarity: "Commun"
+    },
+    {
+        id: "baguette",
+        name: "Baguette Ninja",
+        emoji: "🥖",
+        price: 100,
+        rarity: "Rare"
+    },
+    {
+        id: "croissant",
+        name: "Croissant Royal",
+        emoji: "🥐",
+        price: 250,
+        rarity: "Rare"
+    },
+    {
+        id: "toast",
+        name: "Toast Grillé",
+        emoji: "🍞🔥",
+        price: 400,
+        rarity: "Épique"
+    },
+    {
+        id: "pizza",
+        name: "Pain Pizza",
+        emoji: "🍕",
+        price: 600,
+        rarity: "Épique"
+    },
+    {
+        id: "pretzel",
+        name: "Pain Bretzel",
+        emoji: "🥨",
+        price: 800,
+        rarity: "Légendaire"
+    },
+    {
+        id: "garlic",
+        name: "Pain à l'ail",
+        emoji: "🧄",
+        price: 1000,
+        rarity: "Légendaire"
+    },
+    {
+        id: "gold",
+        name: "Pain Doré",
+        emoji: "✨🍞",
+        price: 1500,
+        rarity: "MYTHIQUE"
+    }
+];
+
+function getSkin(id) {
+    return skins.find(s => s.id === id) || skins[0];
+}
+
+function renderShop() {
+
+    const grid = document.getElementById("shopGrid");
+
+    grid.innerHTML = "";
+
+    skins.forEach(skin => {
+
+        const owned = save.skins.includes(skin.id);
+        const equipped = save.equipped === skin.id;
+
+        const card = document.createElement("div");
+
+        card.className =
+            "skinCard" +
+            (owned ? " owned" : "") +
+            (equipped ? " equipped" : "");
+
+        let action = "";
+
+        if (equipped) {
+            action = `
+                <button class="btn secondary" disabled>
+                    ✅ Équipé
+                </button>
+            `;
+        } else if (owned) {
+            action = `
+                <button class="btn" onclick="equipSkin('${skin.id}')">
+                    👕 Équiper
+                </button>
+            `;
+        } else {
+            action = `
+                <button class="btn"
+                        onclick="buySkin('${skin.id}')"
+                        ${save.coins < skin.price ? "disabled" : ""}>
+                    🪙 ${skin.price}
+                </button>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="skinEmoji emoji">${skin.emoji}</div>
+            <div class="skinName">${skin.name}</div>
+            <div class="skinRarity">${skin.rarity}</div>
+            <div class="skinPrice">
+                ${owned ? "Possédé" : "🪙 " + skin.price}
+            </div>
+            ${action}
+        `;
+
+        grid.appendChild(card);
+    });
+
+    document.getElementById("shopCoins").textContent = save.coins;
+}
+
+function buySkin(id) {
+
+    initAudio();
+
+    const skin = getSkin(id);
+
+    if (!skin || save.skins.includes(id)) return;
+
+    if (save.coins < skin.price) {
+        sfx("error");
+        return;
+    }
+
+    save.coins -= skin.price;
+    save.skins.push(id);
+
+    saveGame();
+
+    sfx("buy");
+
+    renderShop();
+    updateMenu();
+}
+
+function equipSkin(id) {
+
+    initAudio();
+
+    if (!save.skins.includes(id)) return;
+
+    save.equipped = id;
+
+    saveGame();
+
+    sfx("equip");
+
+    renderShop();
+}
+
+/* =========================================================
+   AUDIO - WEB AUDIO API
+   ========================================================= */
+
+let audioCtx = null;
+let masterGain = null;
+let musicTimer = null;
+let musicStep = 0;
+
+function initAudio() {
+
+    if (!audioCtx) {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContext) return;
+
+        audioCtx = new AudioContext();
+
+        masterGain = audioCtx.createGain();
+
+        masterGain.gain.value = .16;
+
+        masterGain.connect(audioCtx.destination);
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+}
+
+function tone(
+    frequency,
+    duration = .1,
+    type = "sine",
+    volume = .08,
+    delay = 0
+) {
+
+    if (!audioCtx || !masterGain) return;
+
+    const now = audioCtx.currentTime + delay;
+
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        now
+    );
+
+    gain.gain.setValueAtTime(.0001, now);
+
+    gain.gain.exponentialRampToValueAtTime(
+        volume,
+        now + .012
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        now + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(masterGain);
+
+    oscillator.start(now);
+    oscillator.stop(now + duration + .03);
+}
+
+function sfx(name) {
+
+    if (!save.sfx) return;
+
+    initAudio();
+
+    if (!audioCtx) return;
+
+    switch (name) {
+
+        case "jump":
+            tone(360,.08,"square",.045);
+            tone(540,.12,"square",.035,.04);
+            break;
+
+        case "coin":
+            tone(700,.07,"sine",.055);
+            tone(1050,.11,"sine",.04,.05);
+            break;
+
+        case "power":
+            tone(300,.08,"triangle",.05);
+            tone(600,.1,"triangle",.05,.08);
+            tone(900,.16,"triangle",.04,.16);
+            break;
+
+        case "buy":
+            tone(450,.08,"triangle",.05);
+            tone(700,.1,"triangle",.05,.08);
+            tone(1000,.16,"triangle",.04,.16);
+            break;
+
+        case "equip":
+            tone(500,.1,"sine",.05);
+            tone(800,.14,"sine",.05,.1);
+            break;
+
+        case "hit":
+            tone(130,.2,"sawtooth",.09);
+            tone(80,.3,"square",.06,.06);
+            break;
+
+        case "start":
+            tone(400,.08,"triangle",.04);
+            tone(600,.08,"triangle",.04,.08);
+            tone(850,.15,"triangle",.05,.16);
+            break;
+
+        case "level":
+            tone(500,.08,"sine",.05);
+            tone(700,.08,"sine",.05,.08);
+            tone(1000,.2,"sine",.05,.16);
+            break;
+
+        case "error":
+            tone(160,.12,"square",.04);
+            break;
+    }
+}
+
+/* =========================================================
+   MUSIQUE SIMPLE
+   ========================================================= */
+
+function startMusic() {
+
+    if (!save.music) return;
+
+    initAudio();
+
+    if (!audioCtx || musicTimer) return;
+
+    const notes = [
+        261.63,
+        329.63,
+        392,
+        329.63,
+        293.66,
+        349.23,
+        440,
+        349.23
+    ];
+
+    musicStep = 0;
+
+    musicTimer = setInterval(() => {
+
+        if (!save.music || !audioCtx) return;
+
+        tone(
+            notes[musicStep % notes.length],
+            .18,
+            "triangle",
+            .018
+        );
+
+        musicStep++;
+
+    }, 300);
+}
+
+function stopMusic() {
+
+    if (musicTimer) {
+        clearInterval(musicTimer);
+        musicTimer = null;
+    }
+}
+
+function toggleSFX() {
+
+    save.sfx = !save.sfx;
+
+    saveGame();
+
+    updateSettings();
+
+    if (save.sfx) {
+        initAudio();
+        sfx("equip");
+    }
+}
+
+function toggleMusic() {
+
+    save.music = !save.music;
+
+    saveGame();
+
+    updateSettings();
+
+    if (save.music) {
+        initAudio();
+        startMusic();
+    } else {
+        stopMusic();
+    }
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+const screens = [
+    "menuScreen",
+    "shopScreen",
+    "statsScreen",
+    "settingsScreen",
+    "gameScreen"
+];
+
+function showScreen(id) {
+
+    screens.forEach(screenId => {
+
+        document
+            .getElementById(screenId)
+            .classList.toggle(
+                "hidden",
+                screenId !== id
+            );
+    });
+
+    if (id === "shopScreen") {
+        renderShop();
+    }
+
+    if (id === "statsScreen") {
+        renderStats();
+    }
+
+    if (id === "settingsScreen") {
+        updateSettings();
+    }
+}
+
+/* =========================================================
+   GAME VARIABLES
+   ========================================================= */
+
+let running = false;
+let paused = false;
+
+let score = 0;
+let runCoins = 0;
+let combo = 1;
+let comboTimer = 0;
+let level = 1;
+
+let spawnTimer = null;
+let gameLoop = null;
+
+let shield = false;
+let magnetUntil = 0;
+let doubleCoinsUntil = 0;
+let slowUntil = 0;
+
+let obstacleCount = 0;
+
+/* =========================================================
+   GAME START
+   ========================================================= */
+
+function startGame() {
+
+    initAudio();
+    sfx("start");
+
+    stopGameTimers();
+
+    showScreen("gameScreen");
+
+    const game = document.getElementById("game");
+
+    game.querySelectorAll(
+        ".obstacle,.coin,.powerup,.particle"
+    ).forEach(e => e.remove());
+
+    document
+        .getElementById("pauseOverlay")
+        .classList.add("hidden");
+
+    document
+        .getElementById("gameOverOverlay")
+        .classList.add("hidden");
+
+    score = 0;
+    runCoins = 0;
+    combo = 1;
+    comboTimer = 0;
+    level = 1;
+    shield = false;
+    magnetUntil = 0;
+    doubleCoinsUntil = 0;
+    slowUntil = 0;
+    obstacleCount = 0;
+
+    running = true;
+    paused = false;
+
+    save.games++;
+    save.missions.games++;
+
+    saveGame();
+
+    updateHUD();
+    updatePowers();
+
+    document.getElementById("player").textContent =
+        getSkin(save.equipped).emoji;
+
+    gameLoop = setInterval(tick, 50);
+
+    scheduleSpawn();
+
+    if (save.music) {
+        startMusic();
+    }
+}
+
+function stopGameTimers() {
+
+    if (spawnTimer) {
+        clearTimeout(spawnTimer);
+        spawnTimer = null;
+    }
+
+    if (gameLoop) {
+        clearInterval(gameLoop);
+        gameLoop = null;
+    }
+}
+
+function quitGame() {
+
+    stopGameTimers();
+
+    running = false;
+    paused = false;
+
+    showScreen("menuScreen");
+    updateMenu();
+}
+
+/* =========================================================
+   SPAWN
+   ========================================================= */
+
+function scheduleSpawn() {
+
+    if (!running || paused) return;
+
+    const difficulty =
+        Math.min(score / 500, 1.8);
+
+    const delay =
+        Math.max(
+            550,
+            1350 - difficulty * 400 + Math.random() * 500
+        );
+
+    spawnTimer = setTimeout(() => {
+
+        spawnObstacle();
+
+        if (Math.random() < .45) {
+            spawnCoinLine();
+        }
+
+        if (
+            score > 80 &&
+            Math.random() < .10
+        ) {
+            spawnPowerup();
+        }
+
+        scheduleSpawn();
+
+    }, delay);
+}
+
+function spawnObstacle() {
+
+    if (!running || paused) return;
+
+    const game = document.getElementById("game");
+
+    const obstacle = document.createElement("div");
+
+    obstacle.className = "obstacle emoji";
+
+    const choices = [
+        "🥖",
+        "🥐",
+        "🍳",
+        "🧈",
+        "🌶️",
+        "🧱",
+        "🧀",
+        "🍩"
+    ];
+
+    obstacle.textContent =
+        choices[Math.floor(Math.random() * choices.length)];
+
+    obstacle.style.left = "105%";
+
+    const speed =
+        Math.max(
+            2.0,
+            4.2 - level * .12
+        );
+
+    obstacle.style.setProperty(
+        "--speed",
+        speed + "s"
+    );
+
+    game.appendChild(obstacle);
+
+    obstacleCount++;
+}
+
+function spawnCoinLine() {
+
+    const game = document.getElementById("game");
+
+    const amount =
+        2 + Math.floor(Math.random() * 4);
+
+    const yPositions = [
+        "31%",
+        "38%",
+        "45%"
+    ];
+
+    for (let i = 0; i < amount; i++) {
+
+        const coin = document.createElement("div");
+
+        coin.className = "coin emoji";
+
+        coin.textContent = "🪙";
+
+        coin.style.left =
+            (105 + i * 6) + "%";
+
+        coin.style.setProperty(
+            "--coinY",
+            yPositions[
+                Math.floor(Math.random() * yPositions.length)
+            ]
+        );
+
+        coin.style.setProperty(
+            "--speed",
+            Math.max(2.2, 4.5 - level * .1) + "s"
+        );
+
+        game.appendChild(coin);
+    }
+}
+
+function spawnPowerup() {
+
+    const game = document.getElementById("game");
+
+    const powers = [
+        {
+            id: "shield",
+            emoji: "🛡️"
+        },
+        {
+            id: "magnet",
+            emoji: "🧲"
+        },
+        {
+            id: "double",
+            emoji: "✖️2️⃣"
+        },
+        {
+            id: "slow",
+            emoji: "🐌"
+        }
+    ];
+
+    const power =
+        powers[Math.floor(Math.random() * powers.length)];
+
+    const element =
+        document.createElement("div");
+
+    element.className = "powerup emoji";
+    element.dataset.power = power.id;
+    element.textContent = power.emoji;
+
+    element.style.left = "105%";
+
+    element.style.setProperty(
+        "--powerY",
+        (30 + Math.random() * 22) + "%"
+    );
+
+    element.style.setProperty(
+        "--speed",
+        Math.max(2.4, 4.8 - level * .1) + "s"
+    );
+
+    game.appendChild(element);
+}
+
+/* =========================================================
+   TICK
+   ========================================================= */
+
+function tick() {
+
+    if (!running || paused) return;
+
+    score += .5;
+
+    const newLevel =
+        1 + Math.floor(score / 150);
+
+    if (newLevel > level) {
+
+        level = newLevel;
+
+        sfx("level");
+
+        showCombo(
+            "⬆️ NIVEAU " + level
+        );
+
+        createParticles(
+            50,
+            25,
+            ["⭐","✨","🔥"]
+        );
+    }
+
+    if (comboTimer > 0) {
+
+        comboTimer--;
+
+        if (comboTimer <= 0) {
+            combo = 1;
+        }
+    }
+
+    checkObjects();
+
+    updateHUD();
+    updatePowers();
+}
+
+/* =========================================================
+   COLLISIONS
+   ========================================================= */
+
+function checkObjects() {
+
+    const player =
+        document.getElementById("player");
+
+    const playerRect =
+        player.getBoundingClientRect();
+
+    /*
+       HITBOX VOLONTAIREMENT PETITE :
+       on retire une grosse marge autour du pain.
+    */
+
+    const p = {
+        left: playerRect.left + playerRect.width * .28,
+        right: playerRect.right - playerRect.width * .28,
+        top: playerRect.top + playerRect.height * .24,
+        bottom: playerRect.bottom - playerRect.height * .16
+    };
+
+    document
+        .querySelectorAll(".obstacle,.coin,.powerup")
+        .forEach(object => {
+
+            if (!document.body.contains(object)) return;
+
+            const rect =
+                object.getBoundingClientRect();
+
+            const r = {
+                left: rect.left + rect.width * .30,
+                right: rect.right - rect.width * .30,
+                top: rect.top + rect.height * .25,
+                bottom: rect.bottom - rect.height * .20
+            };
+
+            const hit =
+                p.left < r.right &&
+                p.right > r.left &&
+                p.top < r.bottom &&
+                p.bottom > r.top;
+
+            if (!hit) {
+
+                /*
+                  AIMANT :
+                  attire les pièces proches.
+                */
+
+                if (
+                    object.classList.contains("coin") &&
+                    Date.now() < magnetUntil
+                ) {
+
+                    const dx =
+                        Math.abs(
+                            playerRect.left - rect.left
+                        );
+
+                    const dy =
+                        Math.abs(
+                            playerRect.top - rect.top
+                        );
+
+                    if (dx < 220 && dy < 180) {
+
+                        collectCoin(object);
+
+                    }
+                }
+
+                return;
+            }
+
+            if (object.classList.contains("coin")) {
+
+                collectCoin(object);
+
+            } else if (
+                object.classList.contains("powerup")
+            ) {
+
+                collectPowerup(object);
+
+            } else {
+
+                hitObstacle(object);
+            }
+        });
+}
+
+/* =========================================================
+   COINS
+   ========================================================= */
+
+function collectCoin(coin) {
+
+    if (!coin.isConnected) return;
+
+    coin.remove();
+
+    const amount =
+        Date.now() < doubleCoinsUntil
+            ? 2
+            : 1;
+
+    runCoins += amount;
+
+    comboTimer = 100;
+
+    combo = Math.min(
+        10,
+        combo + 1
+    );
+
+    save.totalCoins += amount;
+    save.missions.coins += amount;
+
+    sfx("coin");
+
+    createParticles(
+        50,
+        45,
+        ["🪙","✨","💰"]
+    );
+
+    if (combo >= 3) {
+        showCombo("🔥 COMBO x" + combo);
+    }
+
+    saveGame();
+}
+
+/* =========================================================
+   POWERUPS
+   ========================================================= */
+
+function collectPowerup(element) {
+
+    if (!element.isConnected) return;
+
+    const power =
+        element.dataset.power;
+
+    element.remove();
+
+    save.powerups++;
+    save.missions.powerups++;
+
+    switch (power) {
+
+        case "shield":
+
+            shield = true;
+
+            showCombo("🛡️ BOUCLIER !");
+
+            break;
+
+        case "magnet":
+
+            magnetUntil =
+                Date.now() + 8000;
+
+            showCombo("🧲 AIMANT !");
+
+            break;
+
+        case "double":
+
+            doubleCoinsUntil =
+                Date.now() + 8000;
+
+            showCombo("✖️2️⃣ PIÈCES x2 !");
+
+            break;
+
+        case "slow":
+
+            slowUntil =
+                Date.now() + 7000;
+
+            showCombo("🐌 RALENTI !");
+
+            break;
+    }
+
+    sfx("power");
+
+    createParticles(
+        50,
+        40,
+        ["✨","⭐","⚡"]
+    );
+
+    saveGame();
+    updatePowers();
+}
+
+function updatePowers() {
+
+    const container =
+        document.getElementById("activePowers");
+
+    container.innerHTML = "";
+
+    if (shield) {
+
+        container.innerHTML +=
+            `<span class="powerBadge">🛡️</span>`;
+    }
+
+    if (Date.now() < magnetUntil) {
+
+        container.innerHTML +=
+            `<span class="powerBadge">🧲</span>`;
+    }
+
+    if (Date.now() < doubleCoinsUntil) {
+
+        container.innerHTML +=
+            `<span class="powerBadge">✖️2️⃣</span>`;
+    }
+
+    if (Date.now() < slowUntil) {
+
+        container.innerHTML +=
+            `<span class="powerBadge">🐌</span>`;
+    }
+}
+
+/* =========================================================
+   COLLISION OBSTACLE
+   ========================================================= */
+
+function hitObstacle(obstacle) {
+
+    if (!obstacle.isConnected) return;
+
+    if (shield) {
+
+        shield = false;
+
+        obstacle.remove();
+
+        sfx("power");
+
+        showCombo("🛡️ BLOQUÉ !");
+
+        createParticles(
+            50,
+            40,
+            ["🛡️","✨","💥"]
+        );
+
+        updatePowers();
+
+        return;
+    }
+
+    obstacle.remove();
+
+    sfx("hit");
+
+    const game =
+        document.getElementById("game");
+
+    game.classList.remove("hit");
+
+    /*
+       Force le navigateur à recalculer
+       l'animation pour pouvoir la rejouer.
+    */
+    void game.offsetWidth;
+
+    game.classList.add("hit");
+
+    createParticles(
+        12,
+        45,
+        ["💥","🍞","😵","🔥"]
+    );
+
+    gameOver();
+}
+
+/* =========================================================
+   GAME OVER
+   ========================================================= */
+
+function gameOver() {
+
+    if (!running) return;
+
+    running = false;
+
+    stopGameTimers();
+
+    save.coins += runCoins;
+
+    save.distance += Math.floor(score);
+
+    if (score > save.best) {
+        save.best = Math.floor(score);
+    }
+
+    save.missions.jumps =
+        Math.max(
+            save.missions.jumps,
+            0
+        );
+
+    saveGame();
+
+    document.getElementById(
+        "gameOverText"
+    ).innerHTML = `
+        Score : <strong>${Math.floor(score)}</strong><br>
+        🪙 Pièces gagnées : <strong>${runCoins}</strong><br>
+        🏆 Record : <strong>${save.best}</strong><br><br>
+        ${score > save.best - 1
+            ? "🔥 Nouveau record !"
+            : "Le pain a besoin d'un boulanger."
+        }
+    `;
+
+    document
+        .getElementById("gameOverOverlay")
+        .classList.remove("hidden");
+
+    updateMenu();
+}
+
+/* =========================================================
+   JUMP
+   ========================================================= */
+
+let jumpCooldown = false;
+
+function jump() {
+
+    if (!running || paused || jumpCooldown) return;
+
+    jumpCooldown = true;
+
+    const player =
+        document.getElementById("player");
+
+    player.classList.remove("jumping");
+
+    void player.offsetWidth;
+
+    player.classList.add("jumping");
+
+    save.jumps++;
+    save.missions.jumps++;
+
+    sfx("jump");
+
+    createParticles(
+        13,
+        71,
+        ["💨","🍞","✨"]
+    );
+
+    setTimeout(() => {
+        jumpCooldown = false;
+    }, 180);
+}
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.code === "Space" ||
+            event.code === "ArrowUp"
+        ) {
+
+            event.preventDefault();
+
+            if (
+                !document
+                    .getElementById("gameScreen")
+                    .classList.contains("hidden")
+            ) {
+                jump();
+            }
+        }
+
+        if (event.code === "Escape") {
+
+            if (running) {
+                pauseGame();
+            }
+        }
+    }
+);
+
+document
+    .getElementById("game")
+    .addEventListener(
+        "pointerdown",
+        event => {
+
+            if (
+                event.target.closest("button")
+            ) return;
+
+            jump();
+        }
+    );
+
+/* =========================================================
+   PAUSE
+   ========================================================= */
+
+function pauseGame() {
+
+    if (!running) return;
+
+    paused = true;
+
+    document
+        .getElementById("pauseOverlay")
+        .classList.remove("hidden");
+}
+
+function resumeGame() {
+
+    initAudio();
+
+    paused = false;
+
+    document
+        .getElementById("pauseOverlay")
+        .classList.add("hidden");
+
+    scheduleSpawn();
+}
+
+function quitGame() {
+
+    stopGameTimers();
+
+    running = false;
+    paused = false;
+
+    document
+        .getElementById("pauseOverlay")
+        .classList.add("hidden");
+
+    showScreen("menuScreen");
+
+    updateMenu();
+}
+
+/* =========================================================
+   PARTICULES
+   ========================================================= */
+
+function createParticles(x, y, list) {
+
+    const game =
+        document.getElementById("game");
+
+    for (let i = 0; i < 7; i++) {
+
+        const p =
+            document.createElement("div");
+
+        p.className = "particle emoji";
+
+        p.textContent =
+            list[
+                Math.floor(
+                    Math.random() * list.length
+                )
+            ];
+
+        p.style.left =
+            x + (Math.random() * 8 - 4) + "%";
+
+        p.style.top =
+            y + (Math.random() * 8 - 4) + "%";
+
+        p.style.setProperty(
+            "--dx",
+            (Math.random() * 120 - 60) + "px"
+        );
+
+        p.style.setProperty(
+            "--dy",
+            (Math.random() * -120 - 20) + "px"
+        );
+
+        game.appendChild(p);
+
+        setTimeout(
+            () => p.remove(),
+            750
+        );
+    }
+}
+
+function showCombo(text) {
+
+    const popup =
+        document.getElementById("comboPopup");
+
+    popup.textContent = text;
+
+    popup.classList.remove("show");
+
+    void popup.offsetWidth;
+
+    popup.classList.add("show");
+}
+
+/* =========================================================
+   HUD
+   ========================================================= */
+
+function updateHUD() {
+
+    document.getElementById(
+        "scoreDisplay"
+    ).textContent =
+        Math.floor(score);
+
+    document.getElementById(
+        "runCoinsDisplay"
+    ).textContent =
+        runCoins;
+
+    document.getElementById(
+        "levelDisplay"
+    ).textContent =
+        level;
+
+    document.getElementById(
+        "comboDisplay"
+    ).textContent =
+        "x" + combo;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+function updateMenu() {
+
+    document.getElementById(
+        "menuCoins"
+    ).textContent = save.coins;
+
+    document.getElementById(
+        "menuBest"
+    ).textContent = save.best;
+}
+
+/* =========================================================
+   STATS + MISSIONS
+   ========================================================= */
+
+function renderStats() {
+
+    const grid =
+        document.getElementById("statsGrid");
+
+    grid.innerHTML = `
+
+        <div class="statBox">
+            <div class="statIcon emoji">🏆</div>
+            <div class="statValue">${save.best}</div>
+            <div>Meilleur score</div>
+        </div>
+
+        <div class="statBox">
+            <div class="statIcon emoji">🪙</div>
+            <div class="statValue">${save.totalCoins}</div>
+            <div>Pièces récoltées</div>
+        </div>
+
+        <div class="statBox">
+            <div class="statIcon emoji">🎮</div>
+            <div class="statValue">${save.games}</div>
+            <div>Parties</div>
+        </div>
+
+        <div class="statBox">
+            <div class="statIcon emoji">⬆️</div>
+            <div class="statValue">${save.jumps}</div>
+            <div>Sauts</div>
+        </div>
+
+        <div class="statBox">
+            <div class="statIcon emoji">⚡</div>
+            <div class="statValue">${save.powerups}</div>
+            <div>Pouvoirs utilisés</div>
+        </div>
+
+        <div class="statBox">
+            <div class="statIcon emoji">📏</div>
+            <div class="statValue">${save.distance}</div>
+            <div>Distance</div>
+        </div>
+    `;
+
+    renderMissions();
+}
+
+function renderMissions() {
+
+    const container =
+        document.getElementById("missions");
+
+    const missions = [
+        {
+            icon: "🪙",
+            title: "Collectionneur",
+            text: "Récolte 100 pièces",
+            value: save.missions.coins,
+            goal: 100
+        },
+        {
+            icon: "⬆️",
+            title: "Sauteur fou",
+            text: "Effectue 100 sauts",
+            value: save.missions.jumps,
+            goal: 100
+        },
+        {
+            icon: "🎮",
+            title: "Boulanger professionnel",
+            text: "Lance 10 parties",
+            value: save.missions.games,
+            goal: 10
+        },
+        {
+            icon: "⚡",
+            title: "Power-Up addict",
+            text: "Utilise 20 pouvoirs",
+            value: save.missions.powerups,
+            goal: 20
+        }
+    ];
+
+    container.innerHTML = "";
+
+    missions.forEach(mission => {
+
+        const percent =
+            Math.min(
+                100,
+                mission.value / mission.goal * 100
+            );
+
+        const div =
+            document.createElement("div");
+
+        div.className = "mission";
+
+        div.innerHTML = `
+            <strong class="emoji">
+                ${mission.icon}
+                ${mission.title}
+            </strong>
+
+            <br>
+
+            <small>
+                ${mission.text}
+                — ${Math.min(mission.value, mission.goal)}
+                / ${mission.goal}
+            </small>
+
+            <div class="progress">
+                <div style="width:${percent}%"></div>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function updateSettings() {
+
+    document
+        .getElementById("sfxSwitch")
+        .classList.toggle(
+            "active",
+            save.sfx
+        );
+
+    document
+        .getElementById("musicSwitch")
+        .classList.toggle(
+            "active",
+            save.music
+        );
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetSave() {
+
+    const confirmed =
+        confirm(
+            "Supprimer toute la progression de Pain Runner ?"
+        );
+
+    if (!confirmed) return;
+
+    localStorage.removeItem(SAVE_KEY);
+
+    stopMusic();
+
+    save = loadSave();
+
+    updateMenu();
+    updateSettings();
+    renderShop();
+    renderStats();
+
+    sfx("equip");
+}
+
+/* =========================================================
+   INITIALISATION
+   ========================================================= */
+
+updateMenu();
+updateSettings();
+
+/*
+   On ne démarre PAS l'audio automatiquement.
+   Les navigateurs bloquent généralement l'audio
+   avant une interaction de l'utilisateur.
+*/
+
+console.log(
+    "🍞 Pain Runner V2 chargé avec succès !"
+);
+</script>
+
+</body>
+</html>
